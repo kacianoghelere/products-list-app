@@ -1,11 +1,9 @@
 import httpClient from './api'
 
-export function getUserLists(userId) {
-  return httpClient.get(`/user-lists/${userId}/lists`)
-}
+export function getMyLists(params = {}) {
+  const queryString = new URLSearchParams(params).toString()
 
-export function getMyLists() {
-  return httpClient.get(`/user-lists/my-lists`)
+  return httpClient.get(`/user-lists/my-lists?${queryString}`)
 }
 
 export function findUserList(id) {

@@ -22,7 +22,7 @@ export function fetchProductsList(searchText = '') {
         dispatch(resetProductsList())
       }
 
-      const { page: currentPage, results, total_pages } = data;
+      const { currentPage, results, total_pages } = data;
 
       dispatch(setPage(currentPage))
 

@@ -4,6 +4,7 @@ import { Provider } from 'react-redux'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 
 import LoginPage from './LoginPage'
+import MyListsPage from './MyListsPage'
 import UserListPage from './UserListPage'
 
 function Root({ store }) {
@@ -19,7 +20,14 @@ function Root({ store }) {
         </Switch>
         <Switch>
           <Route
-            path="/minha-lista"
+            path="/minhas-listas"
+            component={MyListsPage}
+            exact
+          />
+        </Switch>
+        <Switch>
+          <Route
+            path="/minha-listas/:id"
             component={UserListPage}
             exact
           />

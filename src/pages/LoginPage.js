@@ -29,7 +29,7 @@ class LoginPage extends Component {
 
   render() {
     if (this.props.authentication.token) {
-      return <Redirect to="/minha-lista" />
+      return <Redirect to="/minhas-listas" />
     }
 
     return (
