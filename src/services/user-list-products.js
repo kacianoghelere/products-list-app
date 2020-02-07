@@ -5,9 +5,7 @@ const getListProductUrl = (userListId, productId) => {
 }
 
 export function getListProducts(userListId, params = {}) {
-  const queryString = new URLSearchParams(params).toString()
-
-  const url = `/user-list-products/${userListId}?${queryString}`
+  const url = `/user-list-products/${userListId}`
 
   return httpClient.get(url).then(parseData)
 }

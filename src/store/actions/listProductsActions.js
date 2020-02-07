@@ -65,7 +65,7 @@ export function fetchListProducts(listId) {
 }
 
 export function addProductsToList(listId) {
-  return async (dispatch, getState) => {
+  return async (dispatch) => {
     // BUSCA PRODUTOS POR NOME E PREÇO
 
     // ADICIONA OS SELECIONADOS NA LISTA
