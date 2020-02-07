@@ -1,79 +1,91 @@
-import React, { useState } from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Button, Modal } from 'react-bootstrap'
+import debounce from 'lodash.debounce'
 
-import { addProductsToList } from '../../store/actions/listProductsActions'
 import {
-  fetchProducts,
+  addSelectedProductsToList
+} from '../../store/actions/productsSelectorActions'
+import {
+  fetchSelectorProducts,
+  fetchSelectorProductsNextPage,
   hideProductsSelector
 } from '../../store/actions/productsSelectorActions'
-import ProductsSelectorFilters from './ProductsSelectorFilters'
-import ProductsSelectorList from './ProductsSelectorList'
+import ProductsSelectorFilters from '../ProductsSelectorFilters'
+import ProductsSelectorList from '../ProductsSelectorList'
 import './ProductsSelector.scss'
 
-function ProductsSelector({
-  addProductsToList,
-  list,
-  hideProductsSelector,
-  productsSelector
-}) {
-  const [selectedProducts, setSelectedProducts] = useState([])
+class ProductsSelector extends Component {
 
-  const handleSubmit = (event) => {
+  constructor(props) {
+    super(props)
 
+    this.addProducts = this.addProducts.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
+
+    window.onscroll = debounce(() => {
+      if (window.innerHeight + document.documentElement.scrollTop
+          === document.documentElement.offsetHeight) {
+        this.props.fetchSelectorProductsNextPage()
+      }
+    }, 300)
+  }
+
+  addProducts(event) {
+    this.props.addSelectedProductsToList(this.props.list.id)
+
+    this.props.hideProductsSelector()
 
     event.preventDefault()
   }
 
-  const handleSelectionChange = (collection) => {
-    setSelectedProducts(collection)
-  }
-
-  const addProducts = (event) => {
-    addProductsToList(list.id, selectedProducts)
-
-    hideProductsSelector()
+  handleSubmit(event) {
+    this.props.fetchSelectorProducts()
 
     event.preventDefault()
   }
 
-  return (
-    <Modal.Dialog show={productsSelector.show}>
-      <Modal.Header closeButton>
-        <Modal.Title>Encontrar produtos</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <ProductsSelectorFilters onSubmit={handleSubmit} />
-        <ProductsSelectorList
-          products={productsSelector.products}
-          onChange={handleSelectionChange}
-        />
-      </Modal.Body>
-      <Modal.Footer>
-        <Button
-          variant="outline-secondary"
-          onClick={() => hideProductsSelector()}
-        >
-          Cancelar
-        </Button>
-        <Button
-          variant="primary"
-          onClick={() => addProducts()}
-        >
-          <strong>Adicionar Produtos</strong>
-        </Button>
-      </Modal.Footer>
-    </Modal.Dialog>
-  )
+  render() {
+    return (
+      <Modal
+        size="lg"
+        show={this.props.showSelector}
+        onHide={() => this.props.hideProductsSelector()}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Encontrar produtos</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <ProductsSelectorFilters onSubmit={this.handleSubmit} />
+          <ProductsSelectorList />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="outline-primary"
+            onClick={() => this.props.hideProductsSelector()}
+          >
+            Cancelar
+          </Button>
+          <Button
+            variant="primary"
+            onClick={this.addProducts}
+          >
+            <strong>Adicionar Produtos</strong>
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    )
+  }
 }
 
-const mapStateToProps = ({ productsSelector }) => ({
-  productsSelector
+const mapStateToProps = ({ productsSelector: { showSelector } }) => ({
+  showSelector
 })
 
 const mapDispatchToProps = {
-  addProductsToList,
-  fetchProducts,
+  addSelectedProductsToList,
+  fetchSelectorProducts,
+  fetchSelectorProductsNextPage,
   hideProductsSelector
 }
 

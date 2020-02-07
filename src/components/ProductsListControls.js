@@ -12,7 +12,7 @@ function ProductsListControls({ list, products, showProductsSelector }) {
       <div className="d-md-flex justify-content-md-between align-items-md-center">
         <ProductsSelectedLabel products={products} />
         <button
-          className="btn btn-primary btn-lg mt-sm-2 mt-md-0"
+          className="btn btn-primary mt-sm-2 mt-md-0"
           onClick={() => showProductsSelector()}
         >
           <Icon name="plus" /> <b>Adicionar produtos</b>

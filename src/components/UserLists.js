@@ -21,7 +21,7 @@ function UserLists({ lists, createUserList }) {
       <div className="row">
         {Object.values(lists).map((list) => (
           <div
-            className="col-12 col-sm-6 col-md-4 col-lg-3 p-3 mb-3"
+            className="col-12 col-sm-6 col-md-4 col-lg-3 p-3"
             key={list.id}
           >
             <UserListCard list={list} />

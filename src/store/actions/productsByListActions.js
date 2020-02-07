@@ -42,17 +42,15 @@ export const resetAllListProducts = () => ({
 export function fetchListProducts(listId) {
   return async (dispatch, getState) => {
     try {
-      const { pagination, products } = getState()
+      const { productsByList: { listProducts } } = getState()
 
       dispatch(setLoadingListProducts(true))
 
-      const { results } = await ListProductsService.getListProducts(listId, {
-        page: pagination.page
-      })
+      const { results } = await ListProductsService.getListProducts(listId)
 
       const productsList = UtilsService.normalize(
         results,
-        Object.keys(products).length
+        Object.keys(listProducts).length
       )
 
       dispatch(setListProducts(listId, productsList))
@@ -61,14 +59,6 @@ export function fetchListProducts(listId) {
     } finally {
       dispatch(setLoadingListProducts(false))
     }
-  }
-}
-
-export function addProductsToList(listId) {
-  return async (dispatch) => {
-    // BUSCA PRODUTOS POR NOME E PREÇO
-
-    // ADICIONA OS SELECIONADOS NA LISTA
   }
 }
 

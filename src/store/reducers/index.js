@@ -2,16 +2,14 @@ import { combineReducers } from 'redux'
 
 import authentication from './authenticationReducer'
 import productsSelector from './productsSelectorReducer'
-import listProducts from './listProductsReducer'
+import productsByList from './productsByListReducer'
 import myLists from './myListsReducer'
-import products from './productsReducer'
 import pagination from './paginationReducer'
 
 export default combineReducers({
   authentication,
   productsSelector,
-  listProducts,
+  productsByList,
   myLists,
-  products,
   pagination
 })

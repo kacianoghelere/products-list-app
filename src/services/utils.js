@@ -39,7 +39,7 @@ export function trimText(text = '', length = 100) {
 export function handleError(error) {
   console.error(error)
 
-  const { response: { data: { message = '' } } } = error
+  const { response: { data: { message = '' } = {} } = {} } = error
 
   swal({
     title: 'Ooops! Parece que temos um problema...',

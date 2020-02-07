@@ -1,10 +1,19 @@
+import { combineReducers } from 'redux'
+
 import * as ActionTypes from '../actions/types'
 
-const initialState = {
-  loading: false
+function loading(state = false, action) {
+  switch (action.type) {
+    case ActionTypes.SET_LOADING_LIST_PRODUCTS:
+      return action.value
+    default:
+      return state
+  }
 }
 
-export default function listProducts(state = initialState, action) {
+const listProductsInitialState = {}
+
+function listProducts(state = listProductsInitialState, action) {
   switch (action.type) {
     case ActionTypes.ADD_PRODUCT_TO_LIST:
       return {
@@ -41,14 +50,14 @@ export default function listProducts(state = initialState, action) {
         ...state,
         [action.userListId]: action.products
       }
-    case ActionTypes.SET_LOADING_LIST_PRODUCTS:
-      return {
-        ...state,
-        loading: action.value
-      }
     case ActionTypes.RESET_ALL_LIST_PRODUCTS:
-      return initialState
+      return listProductsInitialState
     default:
       return state
   }
 }
+
+export default combineReducers({
+  loading,
+  listProducts
+})

@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { Redirect } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 
 import { getUserList } from '../store/actions/myListsActions'
-import { fetchListProducts } from '../store/actions/listProductsActions'
+import { fetchListProducts } from '../store/actions/productsByListActions'
 import Page from './Page/Page'
+import Icon from '../components/Icon'
 import LoadingIndicator from '../components/LoadingIndicator'
 import ProductsListHeader from '../components/ProductsListHeader'
 import ProductsList from '../components/ProductsList'
@@ -35,8 +36,20 @@ class UserListPage extends Component {
       return <LoadingIndicator />
     }
 
+    const backLink = (
+      <Link
+        className="mx-3"
+        to="/minhas-listas"
+      >
+        <Icon name="arrow-left" /> Voltar para minhas listas
+      </Link>
+    )
+
     return (
-      <Page className="UserListPage">
+      <Page
+        className="UserListPage"
+        header={backLink}
+      >
         <ProductsListHeader
           list={list}
           products={products}
@@ -60,13 +73,13 @@ UserListPage.propTypes = {
 
 const mapStateToProps = ({
   authentication,
-  listProducts,
+  productsByList: { listProducts, loading: isLoadingListProducts },
   myLists: { lists }
 }, {
   match: { params: { userListId } }
 }) => ({
   authentication,
-  isLoadingListProducts: listProducts.loading,
+  isLoadingListProducts,
   list: lists[userListId] || null,
   products: listProducts[userListId] || null,
   userListId
