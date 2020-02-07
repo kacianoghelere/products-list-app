@@ -1,3 +1,5 @@
+import swal from 'sweetalert'
+
 import * as UserListsService from '../../services/user-lists'
 import * as UtilsService from '../../services/utils'
 import * as ActionTypes from './types'
@@ -17,6 +19,16 @@ const setTotalPages = (totalPages) => ({
   totalPages
 })
 
+const addToMyLists = (list) => ({
+  type: ActionTypes.ADD_TO_MY_LISTS,
+  list
+})
+
+const updateMyList = (list) => ({
+  type: ActionTypes.UPDATE_MY_LIST,
+  list
+})
+
 const setMyLists = (lists) => ({
   type: ActionTypes.SET_MY_LISTS,
   lists
@@ -26,6 +38,88 @@ export const resetMyLists = () => ({
   type: ActionTypes.RESET_MY_LISTS
 })
 
+export function createUserList() {
+  return async (dispatch) => {
+    try {
+      const title = await swal({
+        title: 'Informe um título para a sua lista',
+        text: 'Vamos adicionar alguns produtos para você ;)',
+        content: "input",
+        buttons: ['Cancelar', 'Criar minha lista!']
+      })
+
+      if (! title) {
+        return
+      }
+
+      dispatch(setLoadingMyLists(true))
+
+      const newList = await UserListsService.createUserList({
+        title
+      })
+
+      dispatch(addToMyLists(newList))
+    } catch (error) {
+      UtilsService.handleError(error)
+    } finally {
+      dispatch(setLoadingMyLists(false))
+    }
+  }
+}
+
+export function updateUserList(userListId) {
+  return async (dispatch) => {
+    try {
+      dispatch(setLoadingMyLists(true))
+
+      const title = await swal({
+        title: 'Informe um novo título para a sua lista de produtos',
+        content: "input",
+        buttons: ['Cancelar', 'Atualizar lista']
+      })
+
+      if (! title) {
+        return
+      }
+
+      const updatedList = await UserListsService.updateUserList(userListId, {
+        title
+      })
+
+      dispatch(updateMyList(updatedList))
+    } catch (error) {
+      UtilsService.handleError(error)
+    } finally {
+      dispatch(setLoadingMyLists(false))
+    }
+  }
+}
+
+export function destroyUserList(userListId) {
+  return async (dispatch) => {
+    try {
+      dispatch(setLoadingMyLists(true))
+
+      const shouldDestroy = await swal({
+        title: 'Deseja remover sua lista de produtos?',
+        text: 'Você não será capaz de utilizá-la após a confirmação',
+        dangerMode: true,
+        buttons: ['Cancelar', 'Remover lista']
+      })
+
+      if (shouldDestroy) {
+        await UserListsService.destroyUserList(userListId)
+
+        dispatch(addToMyLists(userListId))
+      }
+    } catch (error) {
+      UtilsService.handleError(error)
+    } finally {
+      dispatch(setLoadingMyLists(false))
+    }
+  }
+}
+
 export function fetchMyLists() {
   return async (dispatch, getState) => {
     try {
@@ -33,7 +127,7 @@ export function fetchMyLists() {
 
       dispatch(setLoadingMyLists(true))
 
-      const { data } = await UserListsService.getMyLists({
+      const data = await UserListsService.getMyLists({
         page: pagination.currentPage
       })
 
@@ -50,7 +144,7 @@ export function fetchMyLists() {
 
       dispatch(setMyLists(userLists))
     } catch (error) {
-      console.error('fetchMyLists', error)
+      UtilsService.handleError(error)
     } finally {
       dispatch(setLoadingMyLists(false))
     }

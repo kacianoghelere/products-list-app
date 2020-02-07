@@ -1,3 +1,5 @@
+import swal from 'sweetalert'
+
 export function normalize(collection = [], startingIndex = 0) {
   let result = {}
 
@@ -23,4 +25,16 @@ export function trimText(text = '', length = 100) {
   }
 
   return text.substr(0, length) + '...'
+}
+
+export function handleError(error) {
+  console.error(error)
+
+  const { response: { data: { message = '' } } } = error
+
+  swal({
+    title: 'Ooops! Parece que temos um problema...',
+    text: message,
+    icon: 'warning'
+  })
 }

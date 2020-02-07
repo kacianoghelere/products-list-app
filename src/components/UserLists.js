@@ -1,12 +1,23 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 
+import { createUserList } from '../store/actions/myListsActions'
+import Icon from './Icon'
 import UserListCard from './UserListCard'
 
-function UserLists({ lists }) {
+function UserLists({ lists, createUserList }) {
   return (
     <div className="UserLists mx-3">
-      <h1 className="my-3">Minhas listas de produtos</h1>
+      <div className="d-flex justify-content-between my-3">
+        <h1 className="m-0">Minhas listas de produtos</h1>
+        <button
+          className="btn btn-primary"
+          onClick={() => createUserList()}
+        >
+          <Icon name="plus" /> <strong>Criar lista de produtos</strong>
+        </button>
+      </div>
       <div className="row">
         {Object.values(lists).map((list) => (
           <div
@@ -25,4 +36,8 @@ UserLists.propTypes = {
   lists: PropTypes.object.isRequired
 }
 
-export default UserLists
+const mapDispatchToProps = {
+  createUserList
+}
+
+export default connect(null, mapDispatchToProps)(UserLists)
