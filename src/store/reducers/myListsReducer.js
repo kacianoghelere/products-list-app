@@ -10,7 +10,7 @@ const paginationInitialState = {
 
 function pagination(state = paginationInitialState, action) {
   switch (action.type) {
-    case ActionTypes.SET_MY_LISTS_LOADING:
+    case ActionTypes.SET_LOADING_MY_LISTS:
       return {
         ...state,
         loading: action.value

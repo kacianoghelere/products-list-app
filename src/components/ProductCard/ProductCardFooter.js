@@ -8,7 +8,7 @@ import './ProductCard.scss'
 function ProductCardFooter({ product }) {
   return (
     <div className="card-footer border-0 bg-white d-flex justify-content-end">
-      <button className="btn btn-secondary">
+      <button className="btn btn-outline-secondary btn-sm">
         <Icon name="trash" /> Remover
       </button>
     </div>

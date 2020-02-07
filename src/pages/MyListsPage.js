@@ -11,6 +11,7 @@ import {
 } from '../store/actions/myListsActions'
 import Page from './Page/Page'
 import LoadingIndicator from '../components/LoadingIndicator'
+import UserListsHeader from '../components/UserListsHeader'
 import UserLists from '../components/UserLists'
 
 class MyListsPage extends Component {
@@ -27,7 +28,7 @@ class MyListsPage extends Component {
   }
 
   componentDidMount() {
-    if (! Object.keys(this.props.lists).length) {
+    if (!Object.keys(this.props.lists).length) {
       this.props.resetMyLists()
 
       this.props.fetchMyLists()
@@ -35,14 +36,21 @@ class MyListsPage extends Component {
   }
 
   render() {
-    if (! this.props.authentication.token) {
+    const {
+      authentication: { token, user },
+      lists,
+      isLoading
+    } = this.props
+
+    if (!token) {
       return <Redirect to="/" />
     }
 
     return (
       <Page className="MyListsPage">
-        <UserLists lists={this.props.lists} />
-        {this.props.isLoading ? <LoadingIndicator /> : null}
+        <UserListsHeader user={user} />
+        <UserLists lists={lists} />
+        {isLoading ? <LoadingIndicator /> : null}
       </Page>
     );
   }

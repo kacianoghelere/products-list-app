@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
-import { fetchProductsList } from '../../store/actions'
+import { fetchListProducts } from '../../store/actions'
 import Icon from '../Icon'
 import './SearchBox.scss'
 
@@ -28,7 +28,7 @@ class SearchBox extends Component {
       clearTimeout(debounceId)
     }
 
-    debounceId = setTimeout(() => this.props.fetchProductsList(value), 300);
+    debounceId = setTimeout(() => this.props.fetchListProducts(value), 300);
   }
 
   render() {
@@ -55,6 +55,6 @@ class SearchBox extends Component {
 
 const mapStateToProps = ({ pagination: { searchText } }) => ({ searchText })
 
-const mapDispatchToProps = { fetchProductsList }
+const mapDispatchToProps = { fetchListProducts }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchBox)

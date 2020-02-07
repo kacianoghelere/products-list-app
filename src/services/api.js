@@ -6,7 +6,7 @@ const httpClient = axios.create({
 })
 
 httpClient.interceptors.request.use(async (config) => {
-  if (! config.url.endsWith('sign-in') || ! config.url.endsWith('sign-up')) {
+  if (!config.url.endsWith('sign-in') || !config.url.endsWith('sign-up')) {
     const authToken = localStorage.getItem('PRODUCT_LIST_AUTH_TOKEN')
 
     config.headers.Authorization = `Bearer ${authToken}`

@@ -1,33 +1,37 @@
 import httpClient, { parseData } from './api'
 
-const getUserListProductUrl = (userListId, productId) => {
+const getListProductUrl = (userListId, productId) => {
   return `/user-list-products/${userListId}/product/${productId}`
 }
 
-export function getUserListProducts(userListId) {
-  return httpClient.get(`/user-list-products/${userListId}`).then(parseData)
-}
+export function getListProducts(userListId, params = {}) {
+  const queryString = new URLSearchParams(params).toString()
 
-export function findUserListProduct(userListId, productId) {
-  const url = getUserListProductUrl(userListId, productId)
+  const url = `/user-list-products/${userListId}?${queryString}`
 
   return httpClient.get(url).then(parseData)
 }
 
-export function createUserList(userListId, productId, params = {}) {
-  const url = getUserListProductUrl(userListId, productId)
+export function findListProduct(userListId, productId) {
+  const url = getListProductUrl(userListId, productId)
+
+  return httpClient.get(url).then(parseData)
+}
+
+export function addListProduct(userListId, productId, params = {}) {
+  const url = getListProductUrl(userListId, productId)
 
   return httpClient.post(url, params).then(parseData)
 }
 
-export function updateUserList(userListId, productId, params = {}) {
-  const url = getUserListProductUrl(userListId, productId)
+export function updateListProduct(userListId, productId, params = {}) {
+  const url = getListProductUrl(userListId, productId)
 
   return httpClient.put(url, params).then(parseData)
 }
 
-export function destroyUserList(userListId, productId) {
-  const url = getUserListProductUrl(userListId, productId)
+export function removeListProduct(userListId, productId) {
+  const url = getListProductUrl(userListId, productId)
 
   return httpClient.delete(url).then(parseData)
 }

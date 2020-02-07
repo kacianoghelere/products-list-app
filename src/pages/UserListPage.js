@@ -2,75 +2,79 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
-import debounce from 'lodash.debounce'
 
-import { fetchProductsList, fetchProductsListNextPage } from '../store/actions'
-import { resetProductsList } from '../store/actions/productsActions'
+import { getUserList } from '../store/actions/myListsActions'
+import { fetchListProducts } from '../store/actions/listProductsActions'
 import Page from './Page/Page'
 import LoadingIndicator from '../components/LoadingIndicator'
 import ProductsListHeader from '../components/ProductsListHeader'
 import ProductsList from '../components/ProductsList'
-import ControlBar from '../components/ControlBar'
 
 class UserListPage extends Component {
 
-  constructor(props) {
-    super(props)
-
-    window.onscroll = debounce(() => {
-      if (window.innerHeight + document.documentElement.scrollTop
-          === document.documentElement.offsetHeight) {
-        this.props.fetchProductsListNextPage()
-      }
-    }, 300)
-  }
-
   componentDidMount() {
-    if (! Object.keys(this.props.products).length) {
-      this.props.resetProductsList()
+    const { list, products, userListId } = this.props
 
-      this.props.fetchProductsList()
+    if (!list) {
+      this.props.getUserList(userListId)
+    }
+
+    if (!products || !Object.keys(products).length) {
+      this.props.fetchListProducts(userListId)
     }
   }
 
   render() {
-    if (! this.props.authentication.token) {
+    const { authentication: { token }, list, products } = this.props
+
+    if (!token) {
       return <Redirect to="/" />
+    }
+
+    if (!list) {
+      return <LoadingIndicator />
     }
 
     return (
       <Page className="UserListPage">
-        <ProductsListHeader />
-        <ControlBar />
-        <ProductsList
-          products={this.props.products}
-          removable
+        <ProductsListHeader
+          list={list}
+          products={products}
         />
-        {this.props.loadingProductsList ? <LoadingIndicator /> : null}
+        {
+          this.props.isLoadingListProducts
+          ? <LoadingIndicator />
+          : <ProductsList products={products} removable />
+        }
       </Page>
     );
   }
 }
 
 UserListPage.propTypes = {
-  products: PropTypes.object.isRequired,
-  fetchProductsList: PropTypes.func.isRequired
+  authentication: PropTypes.object,
+  list: PropTypes.object,
+  products: PropTypes.object,
+  userListId: PropTypes.string
 }
 
 const mapStateToProps = ({
   authentication,
-  loading: { loadingProductsList },
-  products
+  listProducts,
+  myLists: { lists }
+}, {
+  match: { params: { userListId } }
 }) => ({
   authentication,
-  loadingProductsList,
-  products
+  isLoadingListProducts: listProducts.loading,
+  list: lists[userListId] || null,
+  products: listProducts[userListId] || null,
+  userListId
 })
 
 const mapDispatchToProps = {
-  fetchProductsList,
-  fetchProductsListNextPage,
-  resetProductsList
+  fetchListProducts,
+  getUserList
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserListPage)

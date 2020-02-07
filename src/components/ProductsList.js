@@ -4,6 +4,10 @@ import PropTypes from 'prop-types'
 import ProductCard from './ProductCard/ProductCard'
 
 function ProductsList({ products, removable = false }) {
+  if (! products) {
+    return null
+  }
+
   return (
     <div className="ProductsList row mx-0">
       {Object.values(products).map((product) => (
@@ -19,7 +23,7 @@ function ProductsList({ products, removable = false }) {
 }
 
 ProductsList.propTypes = {
-  products: PropTypes.object.isRequired,
+  products: PropTypes.object,
   removable: PropTypes.bool
 }
 

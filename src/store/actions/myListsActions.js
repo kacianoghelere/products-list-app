@@ -5,7 +5,7 @@ import * as UtilsService from '../../services/utils'
 import * as ActionTypes from './types'
 
 const setLoadingMyLists = (value) => ({
-  type: ActionTypes.SET_MY_LISTS_LOADING,
+  type: ActionTypes.SET_LOADING_MY_LISTS,
   value
 })
 
@@ -38,6 +38,22 @@ export const resetMyLists = () => ({
   type: ActionTypes.RESET_MY_LISTS
 })
 
+export function getUserList(id) {
+  return async (dispatch) => {
+    try {
+      dispatch(setLoadingMyLists(true))
+
+      const userList = await UserListsService.findUserList(id)
+
+      dispatch(addToMyLists(userList))
+    } catch (error) {
+      UtilsService.handleError(error)
+    } finally {
+      dispatch(setLoadingMyLists(false))
+    }
+  }
+}
+
 export function createUserList() {
   return async (dispatch) => {
     try {
@@ -48,7 +64,7 @@ export function createUserList() {
         buttons: ['Cancelar', 'Criar minha lista!']
       })
 
-      if (! title) {
+      if (!title) {
         return
       }
 
@@ -78,7 +94,7 @@ export function updateUserList(userListId) {
         buttons: ['Cancelar', 'Atualizar lista']
       })
 
-      if (! title) {
+      if (!title) {
         return
       }
 

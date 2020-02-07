@@ -27,7 +27,7 @@ function Root({ store }) {
         </Switch>
         <Switch>
           <Route
-            path="/minha-listas/:id"
+            path="/minhas-listas/:userListId"
             component={UserListPage}
             exact
           />

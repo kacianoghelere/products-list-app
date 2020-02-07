@@ -19,6 +19,15 @@ export function normalize(collection = [], startingIndex = 0) {
   return result
 }
 
+export function pluralizer(
+  text,
+  count = 1,
+  multipleSuffix = 's',
+  singleSuffix = ''
+) {
+  return `${text}${count <= 1 ? singleSuffix : multipleSuffix}`
+}
+
 export function trimText(text = '', length = 100) {
   if (!text || text.length < length) {
     return text
