@@ -1,30 +1,39 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { Col, Row } from 'react-bootstrap'
+import { Button, Col, Row } from 'react-bootstrap'
 
-import { removeProductFromList } from '../store/actions/productsByListActions'
+import { removeProductFromMyList } from '../store/actions/productsByListActions'
 import Icon from './Icon'
 import ProductAmountChanger from './ProductAmountChanger'
 
-function ProductCardOptions({ list, product }) {
+function ProductCardOptions({
+  editable,
+  list,
+  product,
+  removeProductFromMyList
+}) {
+  if (!editable) return null
+
   return (
     <>
       <hr/>
-      <Row>
-        <Col md="4">
+      <Row className="align-items-end">
+        <Col md="6">
           <ProductAmountChanger
             list={list}
             product={product}
           />
         </Col>
         <Col md="6">
-          <button
-            className="btn btn-outline-secondary btn-sm"
-            onClick={removeProductFromList}
+          <Button
+            variant="outline-secondary"
+            size="sm"
+            onClick={() => removeProductFromMyList(list.id, product.id)}
+            disabled={!!product.processing}
           >
             <Icon name="trash" /> Remover
-          </button>
+          </Button>
         </Col>
       </Row>
     </>
@@ -37,7 +46,7 @@ ProductCardOptions.propTypes = {
 }
 
 const mapDispatchToProps = {
-  removeProductFromList
+  removeProductFromMyList
 }
 
 export default connect(null, mapDispatchToProps)(ProductCardOptions)

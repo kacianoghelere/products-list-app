@@ -1,31 +1,32 @@
 import * as ActionTypes from './types'
 import * as ListProductsService from '../../services/user-list-products'
 import * as UtilsService from '../../services/utils'
+import { updateListProductsCount } from './myListsActions'
 
 const setLoadingListProducts = (value) => ({
   type: ActionTypes.SET_LOADING_LIST_PRODUCTS,
   value
 })
 
-export const addProductToList = (userListId, product) => ({
+const addProductToList = (userListId, product) => ({
   type: ActionTypes.ADD_PRODUCT_TO_LIST,
   userListId,
   product
 })
 
-export const removeProductFromList = (userListId, product) => ({
-  type: ActionTypes.REMOVE_PRODUCT_FROM_LIST,
-  userListId,
-  product
-})
-
-export const updateProductFromList = (userListId, product) => ({
+const updateProductFromList = (userListId, product) => ({
   type: ActionTypes.UPDATE_PRODUCT_FROM_LIST,
   userListId,
   product
 })
 
-export const setListProducts = (userListId, products) => ({
+const removeProductFromList = (userListId, productId) => ({
+  type: ActionTypes.REMOVE_PRODUCT_FROM_LIST,
+  userListId,
+  productId
+})
+
+const setListProducts = (userListId, products) => ({
   type: ActionTypes.SET_LIST_PRODUCTS,
   userListId,
   products
@@ -37,13 +38,6 @@ export const resetListProducts = () => ({
 
 export const resetAllListProducts = () => ({
   type: ActionTypes.RESET_ALL_LIST_PRODUCTS
-})
-
-export const setProductAmount = (userListId, productId, amount) => ({
-  type: ActionTypes.SET_PRODUCT_AMOUNT,
-  userListId,
-  productId,
-  amount
 })
 
 export function fetchListProducts(listId) {
@@ -77,6 +71,38 @@ export function addProductToMyList(listId, productId) {
       const product = await ListProductsService.addListProduct(listId, productId)
 
       dispatch(addProductToList(listId, product))
+    } catch (error) {
+      UtilsService.handleError(error)
+    } finally {
+      dispatch(setLoadingListProducts(false))
+    }
+  }
+}
+
+export function updateProductFromMyList(listId, product) {
+  return async (dispatch) => {
+    try {
+      dispatch(setLoadingListProducts(true))
+
+      await ListProductsService.updateListProduct(listId, product.id, product)
+
+      dispatch(updateProductFromList(listId, product))
+    } catch (error) {
+      UtilsService.handleError(error)
+    } finally {
+      dispatch(setLoadingListProducts(false))
+    }
+  }
+}
+
+export function removeProductFromMyList(listId, productId) {
+  return async (dispatch) => {
+    try {
+      dispatch(setLoadingListProducts(true))
+
+      await ListProductsService.removeListProduct(listId, productId)
+
+      dispatch(removeProductFromList(listId, productId))
     } catch (error) {
       UtilsService.handleError(error)
     } finally {

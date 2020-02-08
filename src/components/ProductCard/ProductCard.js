@@ -6,19 +6,16 @@ import ProductCardOptions from '../ProductCardOptions'
 import './ProductCard.scss'
 
 function ProductCard({ list, product, editable = false }) {
-  const renderOptions = () => {
-    if (!editable) return null
-
-    return (
-      <ProductCardOptions
-        list={list}
-        product={product}
-      />
-    )
+  const classes = {
+    'ProductCard': true,
+    'h-100': true,
+    'border-0': true,
+    'shadow': true,
+    'processing': product.processing
   }
 
   return (
-    <Card className="ProductCard h-100 border-0 shadow">
+    <Card className={classes}>
       <Row className="h-100" noGutters>
         <Col md="4">
           <img
@@ -31,7 +28,11 @@ function ProductCard({ list, product, editable = false }) {
           <Card.Body className="w-100">
             <h5 className="card-title">{product.name}</h5>
             <p className="card-text text-muted"><b>R$:</b> {product.price}</p>
-            {renderOptions()}
+            <ProductCardOptions
+              editable={editable}
+              list={list}
+              product={product}
+            />
           </Card.Body>
         </Col>
       </Row>

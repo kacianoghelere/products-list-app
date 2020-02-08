@@ -35,11 +35,19 @@ class ProductsSelector extends Component {
     this.props.fetchSelectorInitialProducts()
   }
 
-  render() {
+  renderSelectedLabel() {
     const { selectedProductsCount } = this.props
+
+    if (!selectedProductsCount) {
+      return <p className="m-0"></p>
+    }
 
     const selectedLabel = pluralizer('selecionado', selectedProductsCount)
 
+    return <p className="m-0">{selectedProductsCount} {selectedLabel}</p>
+  }
+
+  render() {
     return (
       <Modal
         size="lg"
@@ -54,9 +62,7 @@ class ProductsSelector extends Component {
           <ProductsSelectorList />
         </Modal.Body>
         <Modal.Footer className="d-flex justify-content-between align-items-center">
-          <p className="m-0">
-            {selectedProductsCount} {selectedLabel}
-          </p>
+          {this.renderSelectedLabel()}
           <div>
             <Button
               className="mr-1"

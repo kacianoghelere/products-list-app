@@ -28,6 +28,22 @@ export function pluralizer(
   return `${text}${count <= 1 ? singleSuffix : multipleSuffix}`
 }
 
+export function pluralizedLabel(
+  text,
+  count = 1,
+  multipleSuffix = 's',
+  singleSuffix = ''
+) {
+  const pluralizedContent = pluralizer(
+    text,
+    count,
+    multipleSuffix,
+    singleSuffix
+  )
+
+  return `${count} ${pluralizedContent}`
+}
+
 export function trimText(text = '', length = 100) {
   if (!text || text.length < length) {
     return text
