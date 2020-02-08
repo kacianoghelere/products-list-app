@@ -2,22 +2,15 @@ import * as UtilsService from '../../services/utils'
 import * as ProductsService from '../../services/products'
 import * as ActionTypes from './types'
 
-export function addSelectedProductsToList(listId) {
-  return async (dispatch) => {
-    // BUSCA PRODUTOS POR NOME E PREÇO
-
-    // ADICIONA OS SELECIONADOS NA LISTA
-  }
-}
 
 export const setProductsSelectorPage = (page) => ({
   type: ActionTypes.SET_PRODUCTS_SELECTOR_PAGE,
-  page
+  page: parseInt(page)
 })
 
 export const setProductsSelectorTotalPages = (totalPages) => ({
   type: ActionTypes.SET_PRODUCTS_SELECTOR_TOTAL_PAGES,
-  totalPages
+  totalPages: parseInt(totalPages)
 })
 
 export const setProductsSelectorFilter = (name, value) => ({
@@ -50,6 +43,11 @@ export const toggleProductSelection = (productId, isSelected) => ({
   isSelected
 })
 
+export const toggleProductsSelection = (isSelected) => ({
+  type: ActionTypes.TOGGLE_PRODUCTS_SELECTION,
+  isSelected
+})
+
 export function fetchSelectorProducts() {
   return async (dispatch, getState) => {
     try {
@@ -61,9 +59,7 @@ export function fetchSelectorProducts() {
         page: pagination.page
       })
 
-      const { currentPage, results, total_pages } = response;
-
-      dispatch(setProductsSelectorPage(currentPage))
+      const { results, total_pages } = response;
 
       dispatch(setProductsSelectorTotalPages(total_pages))
 
@@ -87,11 +83,11 @@ export function fetchSelectorProductsNextPage() {
 
     const { page, totalPages } = pagination
 
-    if ((page + 1) >= totalPages) {
+    const nextPage = parseInt(page) + 1
+
+    if (nextPage >= totalPages) {
       return
     }
-
-    const nextPage = (page + 1)
 
     dispatch(setProductsSelectorPage(nextPage))
 
@@ -102,6 +98,8 @@ export function fetchSelectorProductsNextPage() {
 export function fetchSelectorInitialProducts() {
   return (dispatch, getState) => {
     const { productsSelector: { products } } = getState()
+
+    dispatch(setProductsSelectorPage(1))
 
     if (!Object.keys(products || {}).length) {
       dispatch(fetchSelectorProducts())

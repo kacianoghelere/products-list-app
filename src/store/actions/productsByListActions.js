@@ -1,7 +1,6 @@
 import * as ActionTypes from './types'
 import * as ListProductsService from '../../services/user-list-products'
 import * as UtilsService from '../../services/utils'
-import { updateListProductsCount } from './myListsActions'
 
 const setLoadingListProducts = (value) => ({
   type: ActionTypes.SET_LOADING_LIST_PRODUCTS,
@@ -63,14 +62,34 @@ export function fetchListProducts(listId) {
   }
 }
 
-export function addProductToMyList(listId, productId) {
-  return async (dispatch) => {
+export function addProductsToMyList(listId) {
+  return async (dispatch, getState) => {
     try {
+      const {
+        productsByList: { listProducts },
+        productsSelector: { products }
+      } = getState()
+
       dispatch(setLoadingListProducts(true))
 
-      const product = await ListProductsService.addListProduct(listId, productId)
+      const selectedProducts = Object.values(products || {})
+        .filter(({ selected }) => !!selected)
 
-      dispatch(addProductToList(listId, product))
+      for (const product of selectedProducts) {
+        await ListProductsService.addListProduct(
+          listId,
+          product.id
+        )
+
+        if (listProducts.hasOwnProperty(product.id)) {
+          dispatch(updateProductFromList(listId, {
+            ...product,
+            amount: product.amount + 1
+          }))
+        } else {
+          dispatch(addProductToList(listId, product))
+        }
+      }
     } catch (error) {
       UtilsService.handleError(error)
     } finally {

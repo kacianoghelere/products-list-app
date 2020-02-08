@@ -39,6 +39,13 @@ export const getVisibleProducts = createSelector(
   }
 )
 
+export const getSelectedProducts = createSelector(
+  [getProducts],
+  (products) => {
+    return Object.values(products || {}).filter(({ selected }) => !!selected)
+  }
+)
+
 export const getSelectedProductsCount = createSelector(
   [getProducts],
   (products) => {

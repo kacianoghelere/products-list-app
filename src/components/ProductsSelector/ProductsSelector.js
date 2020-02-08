@@ -4,10 +4,10 @@ import { Button, Modal } from 'react-bootstrap'
 
 import { pluralizer } from '../../services/utils'
 import {
-  addSelectedProductsToList,
   fetchSelectorInitialProducts,
   hideProductsSelector
 } from '../../store/actions/productsSelectorActions'
+import { addProductsToMyList } from '../../store/actions/productsByListActions'
 import {
   getSelectedProductsCount
 } from '../../store/selectors/productsByListSelectors'
@@ -24,7 +24,7 @@ class ProductsSelector extends Component {
   }
 
   addProducts(event) {
-    this.props.addSelectedProductsToList(this.props.list.id)
+    this.props.addProductsToMyList(this.props.list.id)
 
     this.props.hideProductsSelector()
 
@@ -90,7 +90,7 @@ const mapStateToProps = ({ productsSelector }) => ({
 })
 
 const mapDispatchToProps = {
-  addSelectedProductsToList,
+  addProductsToMyList,
   fetchSelectorInitialProducts,
   hideProductsSelector
 }

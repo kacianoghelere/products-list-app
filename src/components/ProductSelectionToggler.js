@@ -6,14 +6,19 @@ import {
 } from '../store/actions/productsSelectorActions'
 
 function ProductSelectionToggler({ product, toggleProductSelection }) {
+  const handleChange = ({ target: { checked }}) => {
+    toggleProductSelection(product.id, checked)
+  }
+
   return (
     <div className="custom-control custom-checkbox">
       <input
         className="custom-control-input"
         type="checkbox"
         id={`product-${product.id}`}
+        value={product.id}
         checked={product.selected}
-        onClick={() => toggleProductSelection(product.id, !product.selected)}
+        onChange={handleChange}
       />
       <label
         className="custom-control-label"

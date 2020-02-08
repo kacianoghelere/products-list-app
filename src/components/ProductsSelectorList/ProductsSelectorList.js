@@ -1,14 +1,16 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { ListGroup, ListGroupItem } from 'react-bootstrap'
+import { Button, ListGroup, ListGroupItem } from 'react-bootstrap'
 
 import {
   fetchSelectorInitialProducts,
-  fetchSelectorProductsNextPage
+  fetchSelectorProductsNextPage,
+  toggleProductsSelection
 } from '../../store/actions/productsSelectorActions'
 import {
   getVisibleProducts
 } from '../../store/selectors/productsByListSelectors'
+import Icon from '../Icon'
 import ProductSelectionToggler from '../ProductSelectionToggler'
 import './ProductsSelectorList.scss'
 
@@ -21,6 +23,22 @@ class ProductsSelectorList extends Component {
   render() {
     return (
       <div className="ProductsSelectorList">
+        <div className="d-flex mb-2">
+          <Button
+            variant="outline-primary mr-1"
+            size="sm"
+            onClick={() => this.props.toggleProductsSelection(true)}
+          >
+            <Icon name="check-square-o" /> <strong>Marcar todos</strong>
+          </Button>
+          <Button
+            variant="outline-primary"
+            size="sm"
+            onClick={() => this.props.toggleProductsSelection(false)}
+          >
+            <Icon name="square-o" /> <strong>Desmarcar todos</strong>
+          </Button>
+        </div>
         <ListGroup>
           {Object.values(this.props.visibleProducts || {}).map((product) => (
             <div
@@ -50,7 +68,8 @@ const mapStateToProps = ({ productsSelector }) => ({
 
 const mapDispatchToProps = {
   fetchSelectorInitialProducts,
-  fetchSelectorProductsNextPage
+  fetchSelectorProductsNextPage,
+  toggleProductsSelection
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProductsSelectorList)

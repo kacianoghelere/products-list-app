@@ -76,6 +76,14 @@ function products(state = productsInitialState, action) {
           selected: action.isSelected
         }
       }
+    case ActionTypes.TOGGLE_PRODUCTS_SELECTION:
+      const toggledState = { ...state }
+
+      Object.keys(toggledState).forEach((productId) => {
+        toggledState[productId]['selected'] = action.isSelected
+      })
+
+      return toggledState
     case ActionTypes.RESET_PRODUCTS_FOR_SELECTOR:
       return productsInitialState
     default:
