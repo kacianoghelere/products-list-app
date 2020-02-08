@@ -3,18 +3,19 @@ import PropTypes from 'prop-types'
 
 import ProductCard from './ProductCard/ProductCard'
 
-function ProductsList({ products, removable = false }) {
-  if (! products) {
+function ProductsList({ list, products, editable = false }) {
+  if (!products) {
     return null
   }
 
   return (
     <div className="ProductsList row mx-0">
       {Object.values(products).map((product) => (
-        <div className="col-12 col-sm-6 col-md-4 col-lg-3 p-3" key={product.id}>
+        <div className="col-12 col-sm-6 p-3" key={product.id}>
           <ProductCard
+            list={list}
             product={product}
-            removable={removable}
+            editable={editable}
           />
         </div>
       ))}
@@ -24,7 +25,7 @@ function ProductsList({ products, removable = false }) {
 
 ProductsList.propTypes = {
   products: PropTypes.object,
-  removable: PropTypes.bool
+  editable: PropTypes.bool
 }
 
 export default ProductsList

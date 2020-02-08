@@ -1,21 +1,21 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { connect } from 'react-redux'
 import { Col, Form } from 'react-bootstrap'
 
-export default function ProductsSelectorFilters({ onSubmit }) {
-  const [name, setName] = useState('')
+import {
+  setProductsSelectorFilter
+} from '../store/actions/productsSelectorActions'
 
-  const [minPrice, setMinPrice] = useState(0)
-
-  const [maxPrice, setMaxPrice] = useState(0)
-
-  const handleSubmit = (event) => {
-    onSubmit({ name, minPrice, maxPrice })
-
-    event.preventDefault()
+function ProductsSelectorFilters({
+  filters,
+  setProductsSelectorFilter
+}) {
+  const handleChange = ({ target: { name, value }}) => {
+    setProductsSelectorFilter(name, value)
   }
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form onSubmit={(event) => event.preventDefault()}>
       <Form.Row>
         <Form.Group as={Col} md="6" controlId="formProductName">
           <Form.Label>
@@ -24,7 +24,9 @@ export default function ProductsSelectorFilters({ onSubmit }) {
           <Form.Control
             type="text"
             placeholder="Nome do produto"
-            onChange={(event) => setName(event.target.value)}
+            name="name"
+            value={filters.name}
+            onChange={handleChange}
             required
           />
         </Form.Group>
@@ -35,7 +37,9 @@ export default function ProductsSelectorFilters({ onSubmit }) {
           <Form.Control
             type="number"
             placeholder="Preço mínimo"
-            onChange={(event) => setMinPrice(event.target.value)}
+            name="minPrice"
+            value={filters.minPrice}
+            onChange={handleChange}
             required
           />
         </Form.Group>
@@ -46,7 +50,9 @@ export default function ProductsSelectorFilters({ onSubmit }) {
           <Form.Control
             type="number"
             placeholder="Preço máximo"
-            onChange={(event) => setMaxPrice(event.target.value)}
+            name="maxPrice"
+            value={filters.maxPrice}
+            onChange={handleChange}
             required
           />
         </Form.Group>
@@ -54,3 +60,13 @@ export default function ProductsSelectorFilters({ onSubmit }) {
     </Form>
   )
 }
+
+const mapStateToProps = ({ productsSelector: { filters } }) => ({
+  filters
+})
+
+const mapDispatchToProps = {
+  setProductsSelectorFilter
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProductsSelectorFilters)

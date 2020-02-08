@@ -7,6 +7,11 @@
     border-radius: 0.25rem;
   }
 
+  .card-img {
+    height: 100%;
+    object-fit: cover;
+  }
+
   .card-img-overlay {
     background-color: rgba(black, .75);
     color: white;

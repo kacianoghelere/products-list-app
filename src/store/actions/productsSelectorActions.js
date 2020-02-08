@@ -20,9 +20,10 @@ export const setProductsSelectorTotalPages = (totalPages) => ({
   totalPages
 })
 
-export const setSearchText = (searchText) => ({
-  type: ActionTypes.SET_SEARCH_TEXT,
-  searchText
+export const setProductsSelectorFilter = (name, value) => ({
+  type: ActionTypes.SET_PRODUCTS_SELECTOR_FILTER,
+  name,
+  value
 })
 
 export const showProductsSelector = () => ({
@@ -38,9 +39,8 @@ export const setLoadingProductsForSelector = (value) => ({
   value
 })
 
-export const setProductsForSelector = (listId, products) => ({
+export const setProductsForSelector = (products) => ({
   type: ActionTypes.SET_PRODUCTS_FOR_SELECTOR,
-  listId,
   products
 })
 
@@ -50,27 +50,18 @@ export const toggleProductSelection = (productId, isSelected) => ({
   isSelected
 })
 
-export const setProductAmount = (productId, amount) => ({
-  type: ActionTypes.SET_PRODUCT_AMOUNT,
-  productId,
-  amount
-})
-
-export function fetchSelectorProducts(listId) {
+export function fetchSelectorProducts() {
   return async (dispatch, getState) => {
     try {
-      const {
-        productsSelector: { filters, pagination, products }
-      } = getState()
+      const { productsSelector: { pagination, products } } = getState()
 
       dispatch(setLoadingProductsForSelector(true))
 
-      const { data } = await ProductsService.getProducts({
-        ...filters,
-        page: pagination.page,
+      const response = await ProductsService.getProducts({
+        page: pagination.page
       })
 
-      const { currentPage, results, total_pages } = data;
+      const { currentPage, results, total_pages } = response;
 
       dispatch(setProductsSelectorPage(currentPage))
 
@@ -81,7 +72,7 @@ export function fetchSelectorProducts(listId) {
         Object.keys(products).length
       )
 
-      dispatch(setProductsForSelector(listId, productsList))
+      dispatch(setProductsForSelector(productsList))
     } catch (error) {
       UtilsService.handleError(error)
     } finally {
@@ -90,7 +81,7 @@ export function fetchSelectorProducts(listId) {
   }
 }
 
-export function fetchSelectorProductsNextPage(listId) {
+export function fetchSelectorProductsNextPage() {
   return (dispatch, getState) => {
     const { productsSelector: { pagination } } = getState()
 
@@ -104,6 +95,16 @@ export function fetchSelectorProductsNextPage(listId) {
 
     dispatch(setProductsSelectorPage(nextPage))
 
-    dispatch(fetchSelectorProducts(listId))
+    dispatch(fetchSelectorProducts())
+  }
+}
+
+export function fetchSelectorInitialProducts() {
+  return (dispatch, getState) => {
+    const { productsSelector: { products } } = getState()
+
+    if (!Object.keys(products || {}).length) {
+      dispatch(fetchSelectorProducts())
+    }
   }
 }

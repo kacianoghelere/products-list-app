@@ -45,6 +45,20 @@ class UserListPage extends Component {
       </Link>
     )
 
+    const renderProductList = () => {
+      if (this.props.isLoadingListProducts) {
+        return <LoadingIndicator />
+      }
+
+      return (
+        <ProductsList
+          list={list}
+          products={products}
+          editable
+        />
+      )
+    }
+
     return (
       <Page
         className="UserListPage"
@@ -54,11 +68,7 @@ class UserListPage extends Component {
           list={list}
           products={products}
         />
-        {
-          this.props.isLoadingListProducts
-          ? <LoadingIndicator />
-          : <ProductsList products={products} removable />
-        }
+        {renderProductList()}
       </Page>
     );
   }

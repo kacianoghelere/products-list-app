@@ -39,6 +39,13 @@ export const resetAllListProducts = () => ({
   type: ActionTypes.RESET_ALL_LIST_PRODUCTS
 })
 
+export const setProductAmount = (userListId, productId, amount) => ({
+  type: ActionTypes.SET_PRODUCT_AMOUNT,
+  userListId,
+  productId,
+  amount
+})
+
 export function fetchListProducts(listId) {
   return async (dispatch, getState) => {
     try {

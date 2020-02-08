@@ -1,18 +1,18 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Button, Modal } from 'react-bootstrap'
-import debounce from 'lodash.debounce'
 
+import { pluralizer } from '../../services/utils'
 import {
-  addSelectedProductsToList
-} from '../../store/actions/productsSelectorActions'
-import {
-  fetchSelectorProducts,
-  fetchSelectorProductsNextPage,
+  addSelectedProductsToList,
+  fetchSelectorInitialProducts,
   hideProductsSelector
 } from '../../store/actions/productsSelectorActions'
+import {
+  getSelectedProductsCount
+} from '../../store/selectors/productsByListSelectors'
 import ProductsSelectorFilters from '../ProductsSelectorFilters'
-import ProductsSelectorList from '../ProductsSelectorList'
+import ProductsSelectorList from '../ProductsSelectorList/ProductsSelectorList'
 import './ProductsSelector.scss'
 
 class ProductsSelector extends Component {
@@ -21,14 +21,6 @@ class ProductsSelector extends Component {
     super(props)
 
     this.addProducts = this.addProducts.bind(this)
-    this.handleSubmit = this.handleSubmit.bind(this)
-
-    window.onscroll = debounce(() => {
-      if (window.innerHeight + document.documentElement.scrollTop
-          === document.documentElement.offsetHeight) {
-        this.props.fetchSelectorProductsNextPage()
-      }
-    }, 300)
   }
 
   addProducts(event) {
@@ -39,13 +31,15 @@ class ProductsSelector extends Component {
     event.preventDefault()
   }
 
-  handleSubmit(event) {
-    this.props.fetchSelectorProducts()
-
-    event.preventDefault()
+  componentDidMount() {
+    this.props.fetchSelectorInitialProducts()
   }
 
   render() {
+    const { selectedProductsCount } = this.props
+
+    const selectedLabel = pluralizer('selecionado', selectedProductsCount)
+
     return (
       <Modal
         size="lg"
@@ -59,33 +53,39 @@ class ProductsSelector extends Component {
           <ProductsSelectorFilters onSubmit={this.handleSubmit} />
           <ProductsSelectorList />
         </Modal.Body>
-        <Modal.Footer>
-          <Button
-            variant="outline-primary"
-            onClick={() => this.props.hideProductsSelector()}
-          >
-            Cancelar
-          </Button>
-          <Button
-            variant="primary"
-            onClick={this.addProducts}
-          >
-            <strong>Adicionar Produtos</strong>
-          </Button>
+        <Modal.Footer className="d-flex justify-content-between align-items-center">
+          <p className="m-0">
+            {selectedProductsCount} {selectedLabel}
+          </p>
+          <div>
+            <Button
+              className="mr-1"
+              variant="outline-primary"
+              onClick={() => this.props.hideProductsSelector()}
+            >
+              Cancelar
+            </Button>
+            <Button
+              variant="primary"
+              onClick={this.addProducts}
+            >
+              <strong>Adicionar Produtos</strong>
+            </Button>
+          </div>
         </Modal.Footer>
       </Modal>
     )
   }
 }
 
-const mapStateToProps = ({ productsSelector: { showSelector } }) => ({
-  showSelector
+const mapStateToProps = ({ productsSelector }) => ({
+  showSelector: productsSelector.showSelector,
+  selectedProductsCount: getSelectedProductsCount(productsSelector)
 })
 
 const mapDispatchToProps = {
   addSelectedProductsToList,
-  fetchSelectorProducts,
-  fetchSelectorProductsNextPage,
+  fetchSelectorInitialProducts,
   hideProductsSelector
 }
 
