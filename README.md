@@ -30,4 +30,5 @@ O projeto foi construído utilizando o Redux como ferramenta de comunicação en
 - Redux (Gerenciador de estados imutável) e alguns plug-ins utilitários
 - Bootstrap (Estilização de componentes)
 
-## Link do projeto no Heroku (pendente)
+## Link do projeto no Heroku
+[https://mercado-facil-app.herokuapp.com/](https://mercado-facil-app.herokuapp.com/)
